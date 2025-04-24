@@ -1,50 +1,58 @@
 <template>
-  <div class="max-w-2xl mx-auto p-4 space-y-6">
-    <form @submit.prevent="handleSubmit" class="space-y-4">
-      <div>
-        <label class="block font-semibold">Title</label>
-        <input v-model="form.title" type="text" class="w-full border px-3 py-2 rounded" />
-      </div>
+  <div class=" min-w-screen min-h-screen flex items-center justify-center">
+    <div class="max-w-[360px] px-4 border border-gray-300 rounded-xl p-4 space-y-6">
+      <header class="flex items-center justify-between">
+        <div></div>
+        <h1>اطلاعات مدارک پزشکی</h1>
+        <IconsArrowRight />
+      </header>
 
-      <div>
-        <label class="block font-semibold">Description</label>
-        <textarea v-model="form.description" class="w-full border px-3 py-2 rounded"></textarea>
-      </div>
-
-      <div>
-        <label class="block font-semibold">Date</label>
-        <input v-model="form.date" type="date" class="w-full border px-3 py-2 rounded" />
-      </div>
-
-      <div>
-        <label class="block font-semibold">Photos</label>
-        <input type="file" multiple @change="handlePhotos" class="w-full border px-3 py-2 rounded" />
-        <div class="flex flex-wrap gap-2 mt-2">
-          <img
-            v-for="(img, idx) in photoPreviews"
-            :key="idx"
-            :src="img"
-            class="w-20 h-20 object-cover rounded"
-          />
+      <form @submit.prevent="handleSubmit" class="space-y-4">
+        <div>
+          <label class="block font-semibold">Title</label>
+          <input v-model="form.title" type="text" class="w-full border px-3 py-2 rounded" />
         </div>
-      </div>
 
-      <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Submit</button>
-    </form>
+        <div>
+          <label class="block font-semibold">Description</label>
+          <textarea v-model="form.description" class="w-full border px-3 py-2 rounded"></textarea>
+        </div>
 
-    <div class="mt-10">
-      <h2 class="text-xl font-bold mb-2">Uploaded Entries</h2>
-      <div v-for="item in uploaded" :key="item.id" class="border p-4 mb-4 rounded shadow">
-        <p><strong>Title:</strong> {{ item.title }}</p>
-        <p><strong>Description:</strong> {{ item.description }}</p>
-        <p><strong>Date:</strong> {{ item.date }}</p>
-        <div class="flex gap-2 mt-2">
-          <img
-            v-for="(img, idx) in item.photos"
-            :key="idx"
-            :src="img"
-            class="w-20 h-20 object-cover rounded"
-          />
+        <div>
+          <label class="block font-semibold">Date</label>
+          <input v-model="form.date" type="date" class="w-full border px-3 py-2 rounded" />
+        </div>
+
+        <div>
+          <label class="block font-semibold">Photos</label>
+          <input type="file" multiple @change="handlePhotos" class="w-full border px-3 py-2 rounded" />
+          <div class="flex flex-wrap gap-2 mt-2">
+            <img
+              v-for="(img, idx) in photoPreviews"
+              :key="idx"
+              :src="img"
+              class="w-20 h-20 object-cover rounded"
+            />
+          </div>
+        </div>
+
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Submit</button>
+      </form>
+
+      <div class="mt-10">
+        <h2 class="text-xl font-bold mb-2">Uploaded Entries</h2>
+        <div v-for="item in uploaded" :key="item.id" class="border p-4 mb-4 rounded shadow">
+          <p><strong>Title:</strong> {{ item.title }}</p>
+          <p><strong>Description:</strong> {{ item.description }}</p>
+          <p><strong>Date:</strong> {{ item.date }}</p>
+          <div class="flex gap-2 mt-2">
+            <img
+              v-for="(img, idx) in item.photos"
+              :key="idx"
+              :src="img"
+              class="w-20 h-20 object-cover rounded"
+            />
+          </div>
         </div>
       </div>
     </div>
