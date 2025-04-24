@@ -1,10 +1,10 @@
 <template>
   <div class=" min-w-screen min-h-screen flex items-center justify-center">
     <div class="max-w-[360px] px-4 border border-gray-300 rounded-xl p-4 space-y-6">
-      <header class="flex items-center justify-between">
-        <div></div>
-        <h1>اطلاعات مدارک پزشکی</h1>
-        <IconsArrowRight />
+      <header class="flex items-center justify-center relative">
+        <h1 class="text-neutral-800 font-medium text-base">اطلاعات مدارک پزشکی</h1>
+
+        <IconsArrowRight class="text-neutral-800 absolute right-0" />
       </header>
 
       <form @submit.prevent="handleSubmit" class="space-y-4">
