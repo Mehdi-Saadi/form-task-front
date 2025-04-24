@@ -9,4 +9,5 @@ export interface Photo {
   url: string | null;
   progress: number;
   name: string;
+  path: string | null;
 }
