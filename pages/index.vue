@@ -132,14 +132,19 @@
 </template>
 
 <script setup lang="ts">
+import type { Entry } from '~/models/entry';
 import axios from 'axios';
 
-const form = reactive({
+const { getEntry } = useEntry();
+
+const form = ref<Entry>({
   title: '',
   description: '',
   date: '',
+  photos: [],
 });
 
+const loadingData = ref<boolean>(false)
 const uploadedPhotos = ref<{ url: string | null; progress: number }[]>([]);
 const uploaded = ref([]);
 const photoPaths = ref<string[]>([]);
@@ -194,6 +199,24 @@ async function fetchUploaded() {
   const data = await $fetch('http://localhost:8000/api/entry');
   uploaded.value = data;
 }
+
+const { data } = useAsyncData('storedData', async () => {
+  loadingData.value = true
+
+  try {
+    return getEntry();
+  } catch (e) {
+    alert('Can not load data!');
+  } finally {
+    loadingData.value = false;
+  }
+});
+
+watchEffect(() => {
+  if (data.value) {
+    form.value = data.value
+  }
+})
 
 onMounted(fetchUploaded);
 </script>
