@@ -1,0 +1,106 @@
+<template>
+  <div class="max-w-2xl mx-auto p-4 space-y-6">
+    <form @submit.prevent="handleSubmit" class="space-y-4">
+      <div>
+        <label class="block font-semibold">Title</label>
+        <input v-model="form.title" type="text" class="input" />
+      </div>
+
+      <div>
+        <label class="block font-semibold">Description</label>
+        <textarea v-model="form.description" class="input"></textarea>
+      </div>
+
+      <div>
+        <label class="block font-semibold">Date</label>
+        <input v-model="form.date" type="date" class="input" />
+      </div>
+
+      <div>
+        <label class="block font-semibold">Photos</label>
+        <input type="file" multiple @change="handlePhotos" class="input" />
+        <div class="flex flex-wrap gap-2 mt-2">
+          <img
+            v-for="(img, idx) in photoPreviews"
+            :key="idx"
+            :src="img"
+            class="w-20 h-20 object-cover rounded"
+          />
+        </div>
+      </div>
+
+      <button type="submit" class="btn">Submit</button>
+    </form>
+
+    <div class="mt-10">
+      <h2 class="text-xl font-bold mb-2">Uploaded Entries</h2>
+      <div v-for="item in uploaded" :key="item.id" class="border p-4 mb-4 rounded shadow">
+        <p><strong>Title:</strong> {{ item.title }}</p>
+        <p><strong>Description:</strong> {{ item.description }}</p>
+        <p><strong>Date:</strong> {{ item.date }}</p>
+        <div class="flex gap-2 mt-2">
+          <img
+            v-for="(img, idx) in item.photos"
+            :key="idx"
+            :src="img"
+            class="w-20 h-20 object-cover rounded"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+const form = reactive({
+  title: '',
+  description: '',
+  date: '',
+  photos: [] as File[],
+})
+
+const photoPreviews = ref<string[]>([])
+
+function handlePhotos(event: Event) {
+  const files = (event.target as HTMLInputElement).files
+  if (files) {
+    form.photos = Array.from(files)
+    photoPreviews.value = form.photos.map(file => URL.createObjectURL(file))
+  }
+}
+
+const uploaded = ref([])
+
+async function handleSubmit() {
+  const formData = new FormData()
+  formData.append('title', form.title)
+  formData.append('description', form.description)
+  formData.append('date', form.date)
+  form.photos.forEach((photo) => formData.append('photos[]', photo))
+
+  await $fetch('http://localhost:8000/api/entries', {
+    method: 'POST',
+    body: formData,
+  })
+
+  await fetchUploaded()
+  Object.assign(form, { title: '', description: '', date: '', photos: [] })
+  photoPreviews.value = []
+}
+
+async function fetchUploaded() {
+  const data = await $fetch('http://localhost:8000/api/entries')
+  uploaded.value = data
+}
+
+onMounted(fetchUploaded)
+</script>
+
+<style scoped>
+.input {
+  @apply w-full border px-3 py-2 rounded;
+}
+.btn {
+  @apply px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700;
+}
+</style>
