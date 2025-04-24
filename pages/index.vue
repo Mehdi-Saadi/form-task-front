@@ -7,52 +7,56 @@
         <IconsArrowRight class="text-neutral-800 absolute right-0" />
       </header>
 
-      <form @submit.prevent="handleSubmit" class="space-y-4">
-        <!-- title -->
-        <div class="relative">
-          <input 
-            id="title"
-            name="title"
-            v-model="form.title" 
-            type="text" 
-            class="w-full border border-neutral-400 outline-none focus:border-neutral-500 rounded-2xl placeholder:text-neutral-300 placeholder:font-normal placeholder:text-sm text-neutral-800 font-normal text-sm py-4 ps-11"
-            placeholder="عنوان بیماری یا مدرک پزشکی" 
-          />
-          <label for="title" class="absolute top-1/2 -translate-y-1/2 start-4">
-            <IconsPenAdd />
-          </label>
-        </div>
-
-        <!-- description -->
-        <textarea 
-          v-model="form.description" 
-          class="w-full border border-neutral-400 outline-none focus:border-neutral-500 rounded-2xl placeholder:text-neutral-300 placeholder:font-normal placeholder:text-sm text-neutral-800 font-normal text-sm py-3 ps-3 pe-4 resize-none min-h-[141px]"
-          placeholder="توضیحات خودتون رو اینجا بنویسید"
-        ></textarea>
-
-        <!-- date -->
-        <div class="relative pt-2">
+      <form @submit.prevent="handleSubmit">
+        <!-- fields -->
+        <div class="space-y-4 mb-6 pb-0.5">
+          <!-- title -->
           <div class="relative">
             <input 
-              id="date"
-              name="date"
-              v-model="form.date" 
+              id="title"
+              name="title"
+              v-model="form.title" 
               type="text" 
               class="w-full border border-neutral-400 outline-none focus:border-neutral-500 rounded-2xl placeholder:text-neutral-300 placeholder:font-normal placeholder:text-sm text-neutral-800 font-normal text-sm py-4 ps-11"
               placeholder="عنوان بیماری یا مدرک پزشکی" 
             />
-            <label for="date" class="absolute top-1/2 -translate-y-1/2 start-4">
-              <IconsCalendar />
+            <label for="title" class="absolute top-1/2 -translate-y-1/2 start-4">
+              <IconsPenAdd />
             </label>
           </div>
 
-          <div class=" font-normal text-neutral-400 text-[10px] absolute z-10 top-0 bg-white start-10 px-1">
-            تاریخ مدرک پزشکی
+          <!-- description -->
+          <textarea 
+            v-model="form.description" 
+            class="w-full border border-neutral-400 outline-none focus:border-neutral-500 rounded-2xl placeholder:text-neutral-300 placeholder:font-normal placeholder:text-sm text-neutral-800 font-normal text-sm py-3 ps-3 pe-4 resize-none min-h-[141px]"
+            placeholder="توضیحات خودتون رو اینجا بنویسید"
+          ></textarea>
+
+          <!-- date -->
+          <div class="relative pt-2">
+            <div class="relative">
+              <input 
+                id="date"
+                name="date"
+                v-model="form.date" 
+                type="text" 
+                class="w-full border border-neutral-400 outline-none focus:border-neutral-500 rounded-2xl placeholder:text-neutral-300 placeholder:font-normal placeholder:text-sm text-neutral-800 font-normal text-sm py-4 ps-11"
+                placeholder="عنوان بیماری یا مدرک پزشکی" 
+              />
+              <label for="date" class="absolute top-1/2 -translate-y-1/2 start-4">
+                <IconsCalendar />
+              </label>
+            </div>
+
+            <div class=" font-normal text-neutral-400 text-[10px] absolute z-10 top-0 bg-white start-10 px-1">
+              تاریخ مدرک پزشکی
+            </div>
           </div>
         </div>
 
          <!-- uploads -->
-        <div class=" space-y-4">
+        <div class="space-y-4 mb-13">
+          <!-- title -->
           <div class="flex items-center justify-start space-x-2">
             <div class="w-1.5 h-[34px] rounded-l-md bg-[#8AC33E]"></div>
 
@@ -79,7 +83,7 @@
           </div>
 
           <!-- items -->
-          <div dir="ltr" class=" space-y-2">
+          <div dir="ltr" class="space-y-2">
             <!-- uploaded item -->
             <div class="h-12 px-4 py-2.5 border border-[#8AC33E] rounded-2xl border-dashed bg-[#E7F3D8] flex items-center justify-between">
               <div class="flex items-center space-x-2">
@@ -116,8 +120,14 @@
               <IconsCircleX class="cursor-pointer" />
             </div>
           </div>
+        </div>
 
-          <div>
+        <!-- submit btn -->
+        <button type="submit" class="font-normal text-sm text-[#FCFCFC] bg-[#8AC33E] w-full rounded-4xl h-10 cursor-pointer">
+          ثبت
+        </button>
+
+        <div>
             <div class="flex flex-wrap gap-2 mt-2">
               <img
                 v-for="(img, idx) in photoPreviews"
@@ -127,12 +137,6 @@
               />
             </div>
           </div>
-        </div>
-
-        <!-- submit btn -->
-        <button type="submit" class="font-normal text-sm text-[#FCFCFC] bg-[#8AC33E] w-full rounded-4xl h-10 cursor-pointer">
-          ثبت
-        </button>
       </form>
 
       <div class="mt-10">
