@@ -78,9 +78,7 @@
             />
           </div>
 
-
           <div>
-            <label class="block font-semibold">Photos</label>
             <div class="flex flex-wrap gap-2 mt-2">
               <img
                 v-for="(img, idx) in photoPreviews"
@@ -116,40 +114,60 @@
 </template>
 
 <script setup lang="ts">
+import axios from 'axios'
+
 const form = reactive({
   title: '',
   description: '',
   date: '',
-  photos: [] as File[],
 })
 
-const photoPreviews = ref<string[]>([])
+const uploadedPhotos = ref<{ url: string | null; progress: number }[]>([])
+const uploaded = ref([])
+const photoPaths = ref<string[]>([])
 
 function handlePhotos(event: Event) {
   const files = (event.target as HTMLInputElement).files
-  if (files) {
-    form.photos = Array.from(files)
-    photoPreviews.value = form.photos.map(file => URL.createObjectURL(file))
+  if (!files) return
+
+  for (const file of files) {
+    const entry = { url: null, progress: 0 }
+    uploadedPhotos.value.push(entry)
+    uploadPhoto(file, entry)
   }
 }
 
-const uploaded = ref([])
+async function uploadPhoto(file: File, entry: { url: string | null; progress: number }) {
+  const formData = new FormData()
+  formData.append('photo', file)
+
+  await axios.post('http://localhost:8000/api/photo', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    onUploadProgress(e) {
+      entry.progress = Math.round((e.loaded * 100) / e.total)
+    },
+  }).then(response => {
+    entry.url = response.data.url
+    photoPaths.value.push(response.data.path) // store relative path for submission
+  })
+}
 
 async function handleSubmit() {
-  const formData = new FormData()
-  formData.append('title', form.title)
-  formData.append('description', form.description)
-  formData.append('date', form.date)
-  form.photos.forEach((photo) => formData.append('photos[]', photo))
+  const body = {
+    ...form,
+    photos: photoPaths.value,
+  }
 
   await $fetch('http://localhost:8000/api/entries', {
     method: 'POST',
-    body: formData,
+    body,
   })
 
   await fetchUploaded()
-  Object.assign(form, { title: '', description: '', date: '', photos: [] })
-  photoPreviews.value = []
+
+  Object.assign(form, { title: '', description: '', date: '' })
+  uploadedPhotos.value = []
+  photoPaths.value = []
 }
 
 async function fetchUploaded() {
