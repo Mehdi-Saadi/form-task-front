@@ -132,10 +132,8 @@
 </template>
 
 <script setup lang="ts">
-import type { Entry } from '~/models/entry';
+import type { Entry, Photo } from '~/models/entry';
 import axios from 'axios';
-
-const { getEntry } = useEntry();
 
 const form = ref<Entry>({
   title: '',
@@ -145,66 +143,52 @@ const form = ref<Entry>({
 });
 
 const loadingData = ref<boolean>(false)
-const uploadedPhotos = ref<{ url: string | null; progress: number }[]>([]);
-const uploaded = ref([]);
+const uploadedPhotos = ref<Photo[]>([]);
 const photoPaths = ref<string[]>([]);
 
-function handlePhotos(event: Event) {
+const handlePhotos = (event: Event) => {
   const files = (event.target as HTMLInputElement).files;
   if (!files) {
     return;
   }
 
   for (const file of files) {
-    const entry = { url: null, progress: 0 };
+    const entry = { url: null, progress: 0, name: file.name };
     uploadedPhotos.value.push(entry);
     uploadPhoto(file, entry);
   }
-}
+};
 
-async function uploadPhoto(file: File, entry: { url: string | null; progress: number }) {
+const uploadPhoto = async (file: File, entry: Photo): Promise<void> => {
   const formData = new FormData();
   formData.append('photo', file);
 
-  await axios.post('http://localhost:8000/api/entry/photo', formData, {
+  await axios.post(`${import.meta.env.VITE_API}/entry/photo`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
     onUploadProgress(e) {
       entry.progress = Math.round((e.loaded * 100) / (e.total || 1));
     },
   }).then(response => {
-    entry.url = response.data.url
-    photoPaths.value.push(response.data.path) // store relative path for submission
+    entry.url = response.data.url;
+    entry.name = response.data.name;
+    photoPaths.value.push(response.data.path);
   });
-}
+};
 
-async function handleSubmit() {
-  const body = {
-    ...form,
-    photos: photoPaths.value,
-  };
+const handleSubmit = async (): Promise<void> => {
+  form.value.photos = photoPaths.value;
 
-  await $fetch('http://localhost:8000/api/entries', {
+  await $fetch(`${import.meta.env.VITE_API}/entry`, {
     method: 'POST',
-    body,
+    body: form.value,
   });
-
-  await fetchUploaded();
-
-  Object.assign(form, { title: '', description: '', date: '' });
-  uploadedPhotos.value = [];
-  photoPaths.value = [];
-}
-
-async function fetchUploaded() {
-  const data = await $fetch('http://localhost:8000/api/entry');
-  uploaded.value = data;
-}
+};
 
 const { data } = useAsyncData('storedData', async () => {
   loadingData.value = true
 
   try {
-    return getEntry();
+    return await $fetch(`${import.meta.env.VITE_API}/entry`) as Entry | null;
   } catch (e) {
     alert('Can not load data!');
   } finally {
@@ -214,9 +198,7 @@ const { data } = useAsyncData('storedData', async () => {
 
 watchEffect(() => {
   if (data.value) {
-    form.value = data.value
+    form.value = data.value;
   }
-})
-
-onMounted(fetchUploaded);
+});
 </script>
