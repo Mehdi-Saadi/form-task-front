@@ -3,22 +3,22 @@
     <form @submit.prevent="handleSubmit" class="space-y-4">
       <div>
         <label class="block font-semibold">Title</label>
-        <input v-model="form.title" type="text" class="input" />
+        <input v-model="form.title" type="text" class="w-full border px-3 py-2 rounded" />
       </div>
 
       <div>
         <label class="block font-semibold">Description</label>
-        <textarea v-model="form.description" class="input"></textarea>
+        <textarea v-model="form.description" class="w-full border px-3 py-2 rounded"></textarea>
       </div>
 
       <div>
         <label class="block font-semibold">Date</label>
-        <input v-model="form.date" type="date" class="input" />
+        <input v-model="form.date" type="date" class="w-full border px-3 py-2 rounded" />
       </div>
 
       <div>
         <label class="block font-semibold">Photos</label>
-        <input type="file" multiple @change="handlePhotos" class="input" />
+        <input type="file" multiple @change="handlePhotos" class="w-full border px-3 py-2 rounded" />
         <div class="flex flex-wrap gap-2 mt-2">
           <img
             v-for="(img, idx) in photoPreviews"
@@ -29,7 +29,7 @@
         </div>
       </div>
 
-      <button type="submit" class="btn">Submit</button>
+      <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Submit</button>
     </form>
 
     <div class="mt-10">
@@ -95,12 +95,3 @@ async function fetchUploaded() {
 
 onMounted(fetchUploaded)
 </script>
-
-<style scoped>
-.input {
-  @apply w-full border px-3 py-2 rounded;
-}
-.btn {
-  @apply px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700;
-}
-</style>
