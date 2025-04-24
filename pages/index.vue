@@ -23,9 +23,14 @@
           </label>
         </div>
 
+        <!-- description -->
         <div>
-          <label class="block font-semibold">Description</label>
-          <textarea v-model="form.description" class="w-full border px-3 py-2 rounded"></textarea>
+          <textarea 
+            v-model="form.description" 
+            class="w-full border border-neutral-400 outline-none focus:border-neutral-500 rounded-2xl placeholder:text-neutral-300 placeholder:font-normal placeholder:text-sm text-neutral-800 font-normal text-sm py-3 ps-3 pe-4 resize-none min-h-[141px]"
+            placeholder="توضیحات خودتون رو اینجا بنویسید"
+          >
+          </textarea>
         </div>
 
         <div>
