@@ -132,66 +132,68 @@
 </template>
 
 <script setup lang="ts">
-import axios from 'axios'
+import axios from 'axios';
 
 const form = reactive({
   title: '',
   description: '',
   date: '',
-})
+});
 
-const uploadedPhotos = ref<{ url: string | null; progress: number }[]>([])
-const uploaded = ref([])
-const photoPaths = ref<string[]>([])
+const uploadedPhotos = ref<{ url: string | null; progress: number }[]>([]);
+const uploaded = ref([]);
+const photoPaths = ref<string[]>([]);
 
 function handlePhotos(event: Event) {
-  const files = (event.target as HTMLInputElement).files
-  if (!files) return
+  const files = (event.target as HTMLInputElement).files;
+  if (!files) {
+    return;
+  }
 
   for (const file of files) {
-    const entry = { url: null, progress: 0 }
-    uploadedPhotos.value.push(entry)
-    uploadPhoto(file, entry)
+    const entry = { url: null, progress: 0 };
+    uploadedPhotos.value.push(entry);
+    uploadPhoto(file, entry);
   }
 }
 
 async function uploadPhoto(file: File, entry: { url: string | null; progress: number }) {
-  const formData = new FormData()
-  formData.append('photo', file)
+  const formData = new FormData();
+  formData.append('photo', file);
 
-  await axios.post('http://localhost:8000/api/photo', formData, {
+  await axios.post('http://localhost:8000/api/entry/photo', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
     onUploadProgress(e) {
-      entry.progress = Math.round((e.loaded * 100) / e.total)
+      entry.progress = Math.round((e.loaded * 100) / (e.total || 1));
     },
   }).then(response => {
     entry.url = response.data.url
     photoPaths.value.push(response.data.path) // store relative path for submission
-  })
+  });
 }
 
 async function handleSubmit() {
   const body = {
     ...form,
     photos: photoPaths.value,
-  }
+  };
 
   await $fetch('http://localhost:8000/api/entries', {
     method: 'POST',
     body,
-  })
+  });
 
-  await fetchUploaded()
+  await fetchUploaded();
 
-  Object.assign(form, { title: '', description: '', date: '' })
-  uploadedPhotos.value = []
-  photoPaths.value = []
+  Object.assign(form, { title: '', description: '', date: '' });
+  uploadedPhotos.value = [];
+  photoPaths.value = [];
 }
 
 async function fetchUploaded() {
-  const data = await $fetch('http://localhost:8000/api/entries')
-  uploaded.value = data
+  const data = await $fetch('http://localhost:8000/api/entry');
+  uploaded.value = data;
 }
 
-onMounted(fetchUploaded)
+onMounted(fetchUploaded);
 </script>
