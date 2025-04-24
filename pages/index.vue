@@ -84,41 +84,54 @@
 
           <!-- items -->
           <div dir="ltr" class="space-y-2">
-            <!-- uploaded item -->
-            <div class="h-12 px-4 py-2.5 border border-[#8AC33E] rounded-2xl border-dashed bg-[#E7F3D8] flex items-center justify-between">
-              <div class="flex items-center space-x-2">
-                <div class="flex items-center justify-center size-7 rounded-full bg-[#8AC33E]">
-                  <IconsTickCheck />
-                </div>
-                <div class=" font-normal text-[10px] text-neutral-700">File_Name_001.jpg</div>
-              </div>
-
-              <div class="flex items-center space-x-4">
-                <IconsEye class=" cursor-pointer" />
-                <IconsTrash class=" cursor-pointer" />
-              </div>
-            </div>
-
-            <!-- item to upload -->
-            <div class="h-[70px] px-4 py-2.5 border border-[#8AC33E] rounded-2xl border-dashed bg-[#E7F3D8] flex items-center space-x-4">
-              <div class="flex items-center space-x-2 grow">
-                <div class="flex items-center justify-center size-7 rounded-full bg-[#8AC33E]">
-                  <IconsDirectBoxSend />
-                </div>
-                <div class="grow space-y-2">
-                  <div class="flex items-center justify-between font-normal text-[10px] text-neutral-700">
-                    <div>File_Name_001.jpg</div>
-                    <div>52%</div>
+            <template 
+              v-for="(photo, index) in uploadedPhotos"
+              :key="index"
+            >
+              <!-- uploaded item -->
+              <div 
+                v-if="photo.url"
+                class="h-12 px-4 py-2.5 border border-[#8AC33E] rounded-2xl border-dashed bg-[#E7F3D8] flex items-center justify-between"
+              >
+                <div class="flex items-center space-x-2">
+                  <div class="flex items-center justify-center size-7 rounded-full bg-[#8AC33E]">
+                    <IconsTickCheck />
                   </div>
-                  
-                  <div class="w-full bg-neutral-200 rounded-full h-1.5">
-                    <div class="bg-[#6E9C30] h-1.5 rounded-full" style="width: 52%"></div>
-                  </div>
+                  <div class=" font-normal text-[10px] text-neutral-700">{{ photo.name }}</div>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                  <a :href="photo.url" target="_blank">
+                    <IconsEye class=" cursor-pointer" />
+                  </a>
+                  <IconsTrash class=" cursor-pointer" />
                 </div>
               </div>
 
-              <IconsCircleX class="cursor-pointer" />
-            </div>
+              <!-- item to upload -->
+              <div 
+                v-else 
+                class="h-[70px] px-4 py-2.5 border border-[#8AC33E] rounded-2xl border-dashed bg-[#E7F3D8] flex items-center space-x-4"
+              >
+                <div class="flex items-center space-x-2 grow">
+                  <div class="flex items-center justify-center size-7 rounded-full bg-[#8AC33E]">
+                    <IconsDirectBoxSend />
+                  </div>
+                  <div class="grow space-y-2">
+                    <div class="flex items-center justify-between font-normal text-[10px] text-neutral-700">
+                      <div>{{ photo.name }}</div>
+                      <div>{{ photo.progress }}%</div>
+                    </div>
+                    
+                    <div class="w-full bg-neutral-200 rounded-full h-1.5">
+                      <div class="bg-[#6E9C30] h-1.5 rounded-full" :style="{ width: `${photo.progress}%` }"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <IconsCircleX class="cursor-pointer" />
+              </div>
+            </template>
           </div>
         </div>
 
@@ -153,24 +166,24 @@ const handlePhotos = (event: Event) => {
   }
 
   for (const file of files) {
-    const entry = { url: null, progress: 0, name: file.name };
-    uploadedPhotos.value.push(entry);
+    const entry = ref({ url: null, progress: 0, name: file.name });
+    uploadedPhotos.value.push(entry.value);
     uploadPhoto(file, entry);
   }
 };
 
-const uploadPhoto = async (file: File, entry: Photo): Promise<void> => {
+const uploadPhoto = async (file: File, entry: Ref<Photo>): Promise<void> => {
   const formData = new FormData();
   formData.append('photo', file);
 
   await axios.post(`${import.meta.env.VITE_API}/entry/photo`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
     onUploadProgress(e) {
-      entry.progress = Math.round((e.loaded * 100) / (e.total || 1));
+      entry.value.progress = Math.round((e.loaded * 100) / (e.total || 1));
     },
   }).then(response => {
-    entry.url = response.data.url;
-    entry.name = response.data.name;
+    entry.value.url = response.data.url;
+    entry.value.name = response.data.name;
     photoPaths.value.push(response.data.path);
   });
 };
