@@ -101,7 +101,7 @@
                 </div>
 
                 <div class="flex items-center space-x-4">
-                  <a :href="photo.url" target="_blank">
+                  <a :href="backendRoute + photo.url" target="_blank">
                     <IconsEye class=" cursor-pointer" />
                   </a>
                   <IconsTrash class=" cursor-pointer" />
@@ -148,6 +148,8 @@
 import type { Entry, Photo } from '~/models/entry';
 import axios from 'axios';
 
+const backendRoute = import.meta.env.VITE_BACKEND
+
 const form = ref<Entry>({
   title: '',
   description: '',
@@ -176,7 +178,7 @@ const uploadPhoto = async (file: File, entry: Ref<Photo>): Promise<void> => {
   const formData = new FormData();
   formData.append('photo', file);
 
-  await axios.post(`${import.meta.env.VITE_API}/entry/photo`, formData, {
+  await axios.post(`${backendRoute}/api/entry/photo`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
     onUploadProgress(e) {
       entry.value.progress = Math.round((e.loaded * 100) / (e.total || 1));
@@ -191,7 +193,7 @@ const uploadPhoto = async (file: File, entry: Ref<Photo>): Promise<void> => {
 const handleSubmit = async (): Promise<void> => {
   form.value.photos = photoPaths.value;
 
-  await $fetch(`${import.meta.env.VITE_API}/entry`, {
+  await $fetch(`${backendRoute}/api/entry`, {
     method: 'POST',
     body: form.value,
   });
@@ -201,7 +203,7 @@ const { data } = useAsyncData('storedData', async () => {
   loadingData.value = true
 
   try {
-    return await $fetch(`${import.meta.env.VITE_API}/entry`) as Entry | null;
+    return await $fetch(`${backendRoute}/api/entry`) as Entry | null;
   } catch (e) {
     alert('Can not load data!');
   } finally {
