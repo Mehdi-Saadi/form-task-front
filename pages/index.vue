@@ -24,14 +24,11 @@
         </div>
 
         <!-- description -->
-        <div>
-          <textarea 
-            v-model="form.description" 
-            class="w-full border border-neutral-400 outline-none focus:border-neutral-500 rounded-2xl placeholder:text-neutral-300 placeholder:font-normal placeholder:text-sm text-neutral-800 font-normal text-sm py-3 ps-3 pe-4 resize-none min-h-[141px]"
-            placeholder="توضیحات خودتون رو اینجا بنویسید"
-          >
-          </textarea>
-        </div>
+        <textarea 
+          v-model="form.description" 
+          class="w-full border border-neutral-400 outline-none focus:border-neutral-500 rounded-2xl placeholder:text-neutral-300 placeholder:font-normal placeholder:text-sm text-neutral-800 font-normal text-sm py-3 ps-3 pe-4 resize-none min-h-[141px]"
+          placeholder="توضیحات خودتون رو اینجا بنویسید"
+        ></textarea>
 
         <!-- date -->
         <div class="relative pt-2">
@@ -52,11 +49,6 @@
           <div class=" font-normal text-neutral-400 text-[10px] absolute z-10 top-0 bg-white start-10 px-1">
             تاریخ مدرک پزشکی
           </div>
-        </div>
-
-        <div>
-          <label class="block font-semibold">Date</label>
-          <input v-model="form.date" type="date" class="w-full border px-3 py-2 rounded" />
         </div>
 
         <div>
