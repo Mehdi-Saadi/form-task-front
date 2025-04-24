@@ -1,6 +1,6 @@
 <template>
-  <div dir="rtl" class=" min-w-screen min-h-screen flex items-center justify-center">
-    <div class="max-w-[360px] px-4 border border-neutral-400 rounded-xl p-4 space-y-6">
+  <div dir="rtl" class="min-w-screen min-h-screen flex items-center justify-center">
+    <div class="max-w-[360px] min-w-[360px] px-4 border border-neutral-400 rounded-xl p-4 space-y-6">
       <header class="flex items-center justify-center relative">
         <h1 class="text-neutral-800 font-medium text-base">اطلاعات مدارک پزشکی</h1>
 
@@ -51,16 +51,44 @@
           </div>
         </div>
 
-        <div>
-          <label class="block font-semibold">Photos</label>
-          <input type="file" multiple @change="handlePhotos" class="w-full border px-3 py-2 rounded" />
-          <div class="flex flex-wrap gap-2 mt-2">
-            <img
-              v-for="(img, idx) in photoPreviews"
-              :key="idx"
-              :src="img"
-              class="w-20 h-20 object-cover rounded"
+         <!-- uploads -->
+        <div class=" space-y-4">
+          <div class="flex items-center justify-start space-x-2">
+            <div class="w-1.5 h-[34px] rounded-l-md bg-[#8AC33E]"></div>
+
+            <h3 class="font-medium text-sm text-neutral-800">بارگذاری مدرک پزشکی</h3>
+          </div>
+
+          <!-- input -->
+          <div>
+            <label for="file" class="w-full h-[76px] border border-[#8AC33E] rounded-2xl border-dashed bg-[#E7F3D8] flex items-center justify-center cursor-pointer">
+              <div class="flex flex-col items-center space-y-2">
+                <IconsUpload />
+                <div class=" text-[#527524] font-medium text-xs">انتخاب فایل</div>
+              </div>
+            </label>
+
+            <input 
+              id="file" 
+              name="file" 
+              type="file" 
+              multiple 
+              @change="handlePhotos" 
+              class="hidden" 
             />
+          </div>
+
+
+          <div>
+            <label class="block font-semibold">Photos</label>
+            <div class="flex flex-wrap gap-2 mt-2">
+              <img
+                v-for="(img, idx) in photoPreviews"
+                :key="idx"
+                :src="img"
+                class="w-20 h-20 object-cover rounded"
+              />
+            </div>
           </div>
         </div>
 
