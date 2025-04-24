@@ -1,5 +1,5 @@
 <template>
-  <div dir="rtl" class="min-w-screen min-h-screen flex items-center justify-center">
+  <div dir="rtl" class="size-full flex items-center justify-center py-5">
     <div class="max-w-[360px] min-w-[360px] px-4 border border-neutral-400 rounded-xl p-4 space-y-6">
       <header class="flex items-center justify-center relative">
         <h1 class="text-neutral-800 font-medium text-base">اطلاعات مدارک پزشکی</h1>
@@ -126,35 +126,7 @@
         <button type="submit" class="font-normal text-sm text-[#FCFCFC] bg-[#8AC33E] w-full rounded-4xl h-10 cursor-pointer">
           ثبت
         </button>
-
-        <div>
-            <div class="flex flex-wrap gap-2 mt-2">
-              <img
-                v-for="(img, idx) in photoPreviews"
-                :key="idx"
-                :src="img"
-                class="w-20 h-20 object-cover rounded"
-              />
-            </div>
-          </div>
       </form>
-
-      <div class="mt-10">
-        <h2 class="text-xl font-bold mb-2">Uploaded Entries</h2>
-        <div v-for="item in uploaded" :key="item.id" class="border p-4 mb-4 rounded shadow">
-          <p><strong>Title:</strong> {{ item.title }}</p>
-          <p><strong>Description:</strong> {{ item.description }}</p>
-          <p><strong>Date:</strong> {{ item.date }}</p>
-          <div class="flex gap-2 mt-2">
-            <img
-              v-for="(img, idx) in item.photos"
-              :key="idx"
-              :src="img"
-              class="w-20 h-20 object-cover rounded"
-            />
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
