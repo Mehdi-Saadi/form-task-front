@@ -1,6 +1,6 @@
 <template>
-  <div class=" min-w-screen min-h-screen flex items-center justify-center">
-    <div class="max-w-[360px] px-4 border border-gray-300 rounded-xl p-4 space-y-6">
+  <div dir="rtl" class=" min-w-screen min-h-screen flex items-center justify-center">
+    <div class="max-w-[360px] px-4 border border-neutral-400 rounded-xl p-4 space-y-6">
       <header class="flex items-center justify-center relative">
         <h1 class="text-neutral-800 font-medium text-base">اطلاعات مدارک پزشکی</h1>
 
@@ -8,9 +8,19 @@
       </header>
 
       <form @submit.prevent="handleSubmit" class="space-y-4">
-        <div>
-          <label class="block font-semibold">Title</label>
-          <input v-model="form.title" type="text" class="w-full border px-3 py-2 rounded" />
+        <!-- title -->
+        <div class="relative">
+          <input 
+            id="title"
+            name="title"
+            v-model="form.title" 
+            type="text" 
+            class="w-full border border-neutral-400 outline-none focus:border-neutral-500 rounded-2xl placeholder:text-neutral-300 placeholder:font-normal placeholder:text-sm text-neutral-800 font-normal text-sm py-4 ps-11"
+            placeholder="عنوان بیماری یا مدرک پزشکی" 
+          />
+          <label for="title" class="absolute top-1/2 -translate-y-1/2 start-4">
+            <IconsPenAdd />
+          </label>
         </div>
 
         <div>
