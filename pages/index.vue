@@ -78,6 +78,45 @@
             />
           </div>
 
+          <!-- items -->
+          <div dir="ltr" class=" space-y-2">
+            <!-- uploaded item -->
+            <div class="h-12 px-4 py-2.5 border border-[#8AC33E] rounded-2xl border-dashed bg-[#E7F3D8] flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <div class="flex items-center justify-center size-7 rounded-full bg-[#8AC33E]">
+                  <IconsTickCheck />
+                </div>
+                <div class=" font-normal text-[10px] text-neutral-700">File_Name_001.jpg</div>
+              </div>
+
+              <div class="flex items-center space-x-4">
+                <IconsEye class=" cursor-pointer" />
+                <IconsTrash class=" cursor-pointer" />
+              </div>
+            </div>
+
+            <!-- item to upload -->
+            <div class="h-[70px] px-4 py-2.5 border border-[#8AC33E] rounded-2xl border-dashed bg-[#E7F3D8] flex items-center space-x-4">
+              <div class="flex items-center space-x-2 grow">
+                <div class="flex items-center justify-center size-7 rounded-full bg-[#8AC33E]">
+                  <IconsDirectBoxSend />
+                </div>
+                <div class="grow space-y-2">
+                  <div class="flex items-center justify-between font-normal text-[10px] text-neutral-700">
+                    <div>File_Name_001.jpg</div>
+                    <div>52%</div>
+                  </div>
+                  
+                  <div class="w-full bg-neutral-200 rounded-full h-1.5">
+                    <div class="bg-[#6E9C30] h-1.5 rounded-full" style="width: 52%"></div>
+                  </div>
+                </div>
+              </div>
+
+              <IconsCircleX class="cursor-pointer" />
+            </div>
+          </div>
+
           <div>
             <div class="flex flex-wrap gap-2 mt-2">
               <img
