@@ -90,7 +90,10 @@
           </div>
         </div>
 
-        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Submit</button>
+        <!-- submit btn -->
+        <button type="submit" class="font-normal text-sm text-[#FCFCFC] bg-[#8AC33E] w-full rounded-4xl h-10 cursor-pointer">
+          ثبت
+        </button>
       </form>
 
       <div class="mt-10">
