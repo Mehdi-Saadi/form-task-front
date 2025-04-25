@@ -216,11 +216,13 @@ const loadInitialData = async () => {
   loadingData.value = true
 
   try {
-    const resp = await $fetch(`${backendRoute}/api/entry`) as BackendEntry | null;
+    const resp = await axios.get(`${backendRoute}/api/entry`);
 
-    if (resp) {
-      uploadedPhotos.value = resp.photos
-      form.value = {...resp, photos: resp.photos.map(item => item.name)};
+    const data = resp.data as BackendEntry | null;
+
+    if (data) {
+      uploadedPhotos.value = data.photos
+      form.value = {...data, photos: data.photos.map(item => item.name)};
     }
   } catch (e) {
     alert('Can not load data!');
