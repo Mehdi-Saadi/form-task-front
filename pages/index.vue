@@ -1,3 +1,96 @@
+<script setup lang="ts">
+import type { BackendEntry, Entry, Photo } from '~/models/entry';
+import axios from 'axios';
+
+const backendRoute = import.meta.env.VITE_BACKEND
+
+const form = ref<Entry>({
+  title: '',
+  description: '',
+  date: '',
+  photos: [],
+});
+
+const loadingData = ref<boolean>(false);
+const loading = ref<boolean>(false);
+const uploadedPhotos = ref<Photo[]>([]);
+
+const handlePhotos = (event: Event) => {
+  const files = (event.target as HTMLInputElement).files;
+  if (!files) {
+    return;
+  }
+
+  for (const file of files) {
+    const entry = ref({ url: null, progress: 0, name: file.name });
+    uploadedPhotos.value.push(entry.value);
+    uploadPhoto(file, entry);
+  }
+};
+
+const uploadPhoto = async (file: File, entry: Ref<Photo>): Promise<void> => {
+  const formData = new FormData();
+  formData.append('photo', file);
+
+  await axios.post(`${backendRoute}/api/entry/photo`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    onUploadProgress(e) {
+      entry.value.progress = Math.round((e.loaded * 100) / (e.total || 1));
+    },
+  }).then(response => {
+    entry.value.url = response.data.url;
+    entry.value.name = response.data.name;
+  });
+};
+
+const deletePhoto = async (photo: Photo): Promise<void> => {
+  try {
+    uploadedPhotos.value = uploadedPhotos.value.filter(item => item.name !== photo.name);
+    
+    await axios.delete(`${backendRoute}/api/entry/photo`, {
+      data: { name: photo.name }
+    });
+  } catch (e) {
+    alert('Deleting image failed!');
+  }
+};
+
+const handleSubmit = async (): Promise<void> => {
+  loading.value = true;
+
+  form.value.photos = uploadedPhotos.value.filter(item => typeof item.url === 'string').map(photo => photo.name);
+
+  try {
+    await axios.post(`${backendRoute}/api/entry`, form.value)
+  } catch (e) {
+    alert('Can not submit the form!');
+  } finally {
+    loading.value = false
+  }
+};
+
+const loadInitialData = async () => {
+  loadingData.value = true
+
+  try {
+    const resp = await axios.get(`${backendRoute}/api/entry`);
+
+    const data = resp.data as BackendEntry | null;
+
+    if (data) {
+      uploadedPhotos.value = data.photos
+      form.value = {...data, photos: data.photos.map(item => item.name)};
+    }
+  } catch (e) {
+    alert('Can not load data!');
+  } finally {
+    loadingData.value = false;
+  }
+};
+
+onMounted(loadInitialData);
+</script>
+
 <template>
   <div dir="rtl" class="size-full flex items-center justify-center py-5">
     <div class="max-w-[360px] min-w-[360px] px-4 border border-neutral-400 rounded-xl p-4 space-y-6">
@@ -153,96 +246,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import type { BackendEntry, Entry, Photo } from '~/models/entry';
-import axios from 'axios';
-
-const backendRoute = import.meta.env.VITE_BACKEND
-
-const form = ref<Entry>({
-  title: '',
-  description: '',
-  date: '',
-  photos: [],
-});
-
-const loadingData = ref<boolean>(false);
-const loading = ref<boolean>(false);
-const uploadedPhotos = ref<Photo[]>([]);
-
-const handlePhotos = (event: Event) => {
-  const files = (event.target as HTMLInputElement).files;
-  if (!files) {
-    return;
-  }
-
-  for (const file of files) {
-    const entry = ref({ url: null, progress: 0, name: file.name });
-    uploadedPhotos.value.push(entry.value);
-    uploadPhoto(file, entry);
-  }
-};
-
-const uploadPhoto = async (file: File, entry: Ref<Photo>): Promise<void> => {
-  const formData = new FormData();
-  formData.append('photo', file);
-
-  await axios.post(`${backendRoute}/api/entry/photo`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-    onUploadProgress(e) {
-      entry.value.progress = Math.round((e.loaded * 100) / (e.total || 1));
-    },
-  }).then(response => {
-    entry.value.url = response.data.url;
-    entry.value.name = response.data.name;
-  });
-};
-
-const deletePhoto = async (photo: Photo): Promise<void> => {
-  try {
-    uploadedPhotos.value = uploadedPhotos.value.filter(item => item.name !== photo.name);
-    
-    await axios.delete(`${backendRoute}/api/entry/photo`, {
-      data: { name: photo.name }
-    });
-  } catch (e) {
-    alert('Deleting image failed!');
-  }
-};
-
-const handleSubmit = async (): Promise<void> => {
-  loading.value = true;
-
-  form.value.photos = uploadedPhotos.value.filter(item => typeof item.url === 'string').map(photo => photo.name);
-
-  try {
-    await axios.post(`${backendRoute}/api/entry`, form.value)
-  } catch (e) {
-    alert('Can not submit the form!');
-  } finally {
-    loading.value = false
-  }
-};
-
-const loadInitialData = async () => {
-  loadingData.value = true
-
-  try {
-    const resp = await axios.get(`${backendRoute}/api/entry`);
-
-    const data = resp.data as BackendEntry | null;
-
-    if (data) {
-      uploadedPhotos.value = data.photos
-      form.value = {...data, photos: data.photos.map(item => item.name)};
-    }
-  } catch (e) {
-    alert('Can not load data!');
-  } finally {
-    loadingData.value = false;
-  }
-};
-
-onMounted(loadInitialData);
-</script>
