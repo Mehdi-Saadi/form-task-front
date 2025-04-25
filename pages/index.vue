@@ -128,11 +128,12 @@ onMounted(loadInitialData);
           <!-- date -->
           <div class="relative pt-2">
             <div class="relative">
-              <input 
+              <DateInput
+                v-model="form.date"
                 id="date"
                 name="date"
-                v-model="form.date" 
                 type="text" 
+                placeholder="مثلاً ۱۴۰۳/۰۲/۰۵"
                 class="w-full border border-neutral-400 outline-none focus:border-neutral-500 rounded-2xl placeholder:text-neutral-300 placeholder:font-normal placeholder:text-sm text-neutral-800 font-normal text-sm py-4 ps-11"
               />
               <label for="date" class="absolute top-1/2 -translate-y-1/2 start-4">
@@ -189,7 +190,7 @@ onMounted(loadInitialData);
                   <div class="flex items-center justify-center size-7 rounded-full bg-[#8AC33E]">
                     <IconsTickCheck />
                   </div>
-                  <div class=" font-normal text-[10px] text-neutral-700">{{ photo.name }}</div>
+                  <div class=" font-normal text-[10px] text-neutral-700">{{ toPersianDigits(photo.name) }}</div>
                 </div>
 
                 <div class="flex items-center space-x-4">
@@ -214,8 +215,8 @@ onMounted(loadInitialData);
                   </div>
                   <div class="grow space-y-2">
                     <div class="flex items-center justify-between font-normal text-[10px] text-neutral-700">
-                      <div>{{ photo.name }}</div>
-                      <div>{{ photo.progress }}%</div>
+                      <div>{{ toPersianDigits(photo.name) }}</div>
+                      <div>{{ toPersianDigits(String(photo.progress)) }}%</div>
                     </div>
                     
                     <div class="w-full bg-neutral-200 rounded-full h-1.5">
