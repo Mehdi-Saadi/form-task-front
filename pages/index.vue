@@ -110,7 +110,7 @@ onMounted(loadInitialData);
               name="title"
               v-model="form.title" 
               type="text" 
-              class="w-full border border-neutral-400 outline-none focus:border-neutral-500 rounded-2xl placeholder:text-neutral-300 placeholder:font-normal placeholder:text-sm text-neutral-800 font-normal text-sm py-4 ps-11"
+              class="w-full border border-neutral-400 outline-none focus:border-neutral-500 rounded-2xl placeholder:relative placeholder:-top-0.5 placeholder:text-neutral-300 placeholder:font-normal placeholder:text-sm text-neutral-800 font-normal text-sm py-4 ps-11"
               placeholder="عنوان بیماری یا مدرک پزشکی" 
             />
             <label for="title" class="absolute top-1/2 -translate-y-1/2 start-4">
@@ -134,7 +134,6 @@ onMounted(loadInitialData);
                 v-model="form.date" 
                 type="text" 
                 class="w-full border border-neutral-400 outline-none focus:border-neutral-500 rounded-2xl placeholder:text-neutral-300 placeholder:font-normal placeholder:text-sm text-neutral-800 font-normal text-sm py-4 ps-11"
-                placeholder="عنوان بیماری یا مدرک پزشکی" 
               />
               <label for="date" class="absolute top-1/2 -translate-y-1/2 start-4">
                 <IconsCalendar />
