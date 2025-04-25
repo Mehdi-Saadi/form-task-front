@@ -148,7 +148,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Entry, Photo } from '~/models/entry';
+import type { BackendEntry, Entry, Photo } from '~/models/entry';
 import axios from 'axios';
 
 const backendRoute = import.meta.env.VITE_BACKEND
@@ -212,21 +212,22 @@ const handleSubmit = async (): Promise<void> => {
   });
 };
 
-const { data } = useAsyncData('storedData', async () => {
+const loadInitialData = async () => {
   loadingData.value = true
 
   try {
-    return await $fetch(`${backendRoute}/api/entry`) as Entry | null;
+    const resp = await $fetch(`${backendRoute}/api/entry`) as BackendEntry | null;
+
+    if (resp) {
+      uploadedPhotos.value = resp.photos
+      form.value = {...resp, photos: resp.photos.map(item => item.name)};
+    }
   } catch (e) {
     alert('Can not load data!');
   } finally {
     loadingData.value = false;
   }
-});
+};
 
-watchEffect(() => {
-  if (data.value) {
-    form.value = data.value;
-  }
-});
+onMounted(loadInitialData);
 </script>
