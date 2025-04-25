@@ -8,17 +8,21 @@ const props = defineProps<{
 const emit = defineEmits(['progress', 'create', 'delete'])
 
 const backendRoute = import.meta.env.VITE_BACKEND
+let abortController: AbortController | null = null
 
 const uploadPhoto = async (): Promise<void> => {
   if (!props.photo.file) {
     return;
   }
 
+  abortController = new AbortController();
+
   const formData = new FormData();
   formData.append('photo', props.photo.file);
 
   await axios.post(`${backendRoute}/api/entry/photo`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
+    signal: abortController.signal,
     onUploadProgress(e) {
       emit('progress', Math.round((e.loaded * 100) / (e.total || 1)));
     },
@@ -33,6 +37,13 @@ const deletePhoto = async (): Promise<void> => {
     emit('delete', props.photo.name);
   } catch (e) {
     alert('Deleting image failed!');
+  }
+};
+
+const onCancel = (): void => {
+  if (abortController) {
+    abortController.abort();
+    emit('delete', props.photo.name);
   }
 };
 
@@ -84,6 +95,6 @@ onMounted(uploadPhoto);
       </div>
     </div>
 
-    <IconsCircleX class="cursor-pointer" />
+    <IconsCircleX class="cursor-pointer" @click="onCancel" />
   </div>
 </template>
