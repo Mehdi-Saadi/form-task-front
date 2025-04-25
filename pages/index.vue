@@ -139,8 +139,15 @@
         </div>
 
         <!-- submit btn -->
-        <button type="submit" class="font-normal text-sm text-[#FCFCFC] bg-[#8AC33E] w-full rounded-4xl h-10 cursor-pointer">
-          ثبت
+        <button 
+          :disabled="loading" 
+          type="submit" 
+          class="font-normal text-sm text-[#FCFCFC] bg-[#8AC33E] w-full rounded-4xl h-10 cursor-pointer flex items-center justify-center"
+        >
+          <IconsSpin v-if="loading" class="size-5 animate-spin text-white" />
+          <template v-else>
+            ثبت
+          </template>
         </button>
       </form>
     </div>
@@ -160,7 +167,8 @@ const form = ref<Entry>({
   photos: [],
 });
 
-const loadingData = ref<boolean>(false)
+const loadingData = ref<boolean>(false);
+const loading = ref<boolean>(false);
 const uploadedPhotos = ref<Photo[]>([]);
 
 const handlePhotos = (event: Event) => {
@@ -204,12 +212,17 @@ const deletePhoto = async (photo: Photo): Promise<void> => {
 };
 
 const handleSubmit = async (): Promise<void> => {
+  loading.value = true;
+
   form.value.photos = uploadedPhotos.value.filter(item => typeof item.url === 'string').map(photo => photo.name);
 
-  await $fetch(`${backendRoute}/api/entry`, {
-    method: 'POST',
-    body: form.value,
-  });
+  try {
+    await axios.post(`${backendRoute}/api/entry`, form.value)
+  } catch (e) {
+    alert('Can not submit the form!');
+  } finally {
+    loading.value = false
+  }
 };
 
 const loadInitialData = async () => {
