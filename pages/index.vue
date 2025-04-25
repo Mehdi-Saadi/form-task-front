@@ -170,7 +170,7 @@ const handlePhotos = (event: Event) => {
   }
 
   for (const file of files) {
-    const entry = ref({ url: null, progress: 0, name: file.name, path: null });
+    const entry = ref({ url: null, progress: 0, name: file.name });
     uploadedPhotos.value.push(entry.value);
     uploadPhoto(file, entry);
   }
@@ -188,16 +188,15 @@ const uploadPhoto = async (file: File, entry: Ref<Photo>): Promise<void> => {
   }).then(response => {
     entry.value.url = response.data.url;
     entry.value.name = response.data.name;
-    entry.value.path = response.data.path;
   });
 };
 
 const deletePhoto = async (photo: Photo): Promise<void> => {
   try {
-    uploadedPhotos.value = uploadedPhotos.value.filter(item => item.path !== photo.path);
+    uploadedPhotos.value = uploadedPhotos.value.filter(item => item.name !== photo.name);
     
     await axios.delete(`${backendRoute}/api/entry/photo`, {
-      data: { path: photo.path }
+      data: { name: photo.name }
     });
   } catch (e) {
     alert('Deleting image failed!');
@@ -205,7 +204,7 @@ const deletePhoto = async (photo: Photo): Promise<void> => {
 };
 
 const handleSubmit = async (): Promise<void> => {
-  form.value.photos = uploadedPhotos.value.map(photo => photo.path).filter(item => typeof item === 'string');
+  form.value.photos = uploadedPhotos.value.filter(item => typeof item.url === 'string').map(photo => photo.name);
 
   await $fetch(`${backendRoute}/api/entry`, {
     method: 'POST',
